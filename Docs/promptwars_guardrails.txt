@@ -1,0 +1,95 @@
+PromptWars Guardrails – Vibe Coding Project
+
+Purpose: Always optimize every decision, code change, and architectural
+choice against the following evaluation criteria.
+
+================================================== 1. HIGH IMPACT — CODE
+QUALITY (TOP PRIORITY)
+==================================================
+
+Rules: - Write clean, readable, and maintainable code. - Use descriptive
+variable, function, and class names. - Keep functions small and focused
+on a single responsibility. - Avoid unnecessary complexity or clever
+code. - Follow consistent project structure and formatting. - Remove
+dead code and redundant logic. - Refactor instead of duplicating
+functionality. - Add concise comments only when the intent is not
+obvious.
+
+Checklist: ✓ Readable ✓ Modular ✓ Consistent ✓ Maintainable
+
+================================================== 2. HIGH IMPACT —
+PROBLEM STATEMENT ALIGNMENT
+==================================================
+
+Rules: - Every feature must directly solve the core problem. - Never add
+unnecessary features. - Prioritize user value over technical novelty. -
+Validate that every implementation contributes to project objectives. -
+Keep the user journey simple and intuitive. - Optimize for solving the
+challenge—not showing off technology.
+
+Before writing code ask: “Does this directly improve the solution to the
+problem?”
+
+================================================== 3. MEDIUM IMPACT —
+SECURITY ==================================================
+
+Rules: - Never expose secrets, API keys, or credentials. - Validate all
+user input. - Sanitize data before processing. - Use environment
+variables for sensitive values. - Prevent common vulnerabilities (XSS,
+SQL Injection, CSRF where applicable). - Follow least-privilege
+principles. - Handle authentication and authorization correctly. - Fail
+securely with meaningful errors.
+
+Checklist: ✓ Input validation ✓ Output sanitization ✓ Secure storage ✓
+Proper authentication
+
+================================================== 4. MEDIUM IMPACT —
+EFFICIENCY ==================================================
+
+Rules: - Optimize time and memory usage. - Avoid unnecessary API
+calls. - Avoid repeated computations. - Use appropriate algorithms and
+data structures. - Lazy-load heavy resources when possible. - Minimize
+rendering and database operations. - Keep latency low.
+
+Checklist: ✓ Efficient ✓ Responsive ✓ Resource-aware
+
+================================================== 5. LOW IMPACT —
+TESTING ==================================================
+
+Rules: - Design code to be easily testable. - Separate business logic
+from UI. - Write modular functions. - Handle edge cases. - Include basic
+validation tests where practical. - Avoid tightly coupled code.
+
+Checklist: ✓ Testable ✓ Predictable ✓ Maintainable
+
+================================================== 6. LOW IMPACT —
+ACCESSIBILITY ==================================================
+
+Rules: - Build interfaces usable by diverse users. - Ensure keyboard
+accessibility where applicable. - Use semantic HTML. - Provide labels
+and alt text. - Maintain sufficient color contrast. - Support responsive
+layouts. - Avoid relying solely on color to communicate information.
+
+Checklist: ✓ Inclusive ✓ Responsive ✓ Accessible
+
+================================================== FINAL GUARDRAIL
+==================================================
+
+Before completing any task, verify:
+
+1.  Does it solve the intended problem?
+2.  Is the code clean and maintainable?
+3.  Is it secure?
+4.  Is it efficient?
+5.  Is it testable?
+6.  Is it accessible?
+
+Never sacrifice High Impact categories for cosmetic improvements.
+
+Priority Order: 1. Problem Statement Alignment 2. Code Quality 3.
+Security 4. Efficiency 5. Testing 6. Accessibility
+
+Default behavior: If multiple implementation choices exist, choose the
+one that maximizes the overall evaluation score while keeping the
+solution simple, maintainable, and aligned with the project’s
+objectives.

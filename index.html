@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sous-Chef AI — Your Smart Cooking Agent</title>
+  <!-- Google Fonts: Outfit and Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="glow-bg glow-orange"></div>
+  <div class="glow-bg glow-purple"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <i data-lucide="chef-hat" class="brand-icon"></i>
+        <h1>Sous-Chef <span class="accent-text">AI</span></h1>
+      </div>
+      <p class="tagline">An intelligent, empathetic cooking assistant & lifestyle agent.</p>
+      
+      <!-- Mode Toggle -->
+      <div class="mode-toggle-container">
+        <button id="mode-demo-btn" class="mode-btn active" onclick="switchMode('demo')">
+          <i data-lucide="play" class="btn-icon"></i> Interactive Demo
+        </button>
+        <button id="mode-live-btn" class="mode-btn" onclick="switchMode('live')">
+          <i data-lucide="zap" class="btn-icon"></i> Live Gemini AI
+        </button>
+      </div>
+    </header>
+
+    <!-- API Key Panel (Hidden by default unless in Live Mode) -->
+    <section id="api-panel" class="glass-card api-panel hidden">
+      <div class="api-header" onclick="toggleApiSettings()">
+        <div class="api-title">
+          <i data-lucide="key" class="icon-orange"></i>
+          <h3>Gemini API Connection</h3>
+        </div>
+        <i data-lucide="chevron-down" id="api-chevron" class="chevron"></i>
+      </div>
+      <div id="api-body" class="api-body collapsed">
+        <p class="api-desc">Your API key is stored securely inside your browser's local storage and is sent directly to Google Gemini API.</p>
+        <div class="input-group">
+          <input type="password" id="api-key-input" placeholder="AIzaSy..." class="glass-input">
+          <button id="save-key-btn" class="primary-btn shrink-btn" onclick="saveApiKey()">Save Key</button>
+        </div>
+        <p id="api-status" class="api-status-text"></p>
+      </div>
+    </section>
+
+    <!-- Main Workspace -->
+    <main class="main-grid">
+      
+      <!-- Left Panel: Input & Control Panel -->
+      <aside class="control-panel">
+        <div class="glass-card">
+          <h2 class="panel-title"><i data-lucide="sliders" class="panel-title-icon"></i> Daily Context</h2>
+          
+          <!-- Preset Selector (Only in Demo Mode) -->
+          <div id="demo-presets-container" class="form-group">
+            <label class="form-label">Select Demo Schedule Scenario</label>
+            <div class="preset-cards">
+              <button class="preset-card active" onclick="selectPreset('fatigue')">
+                <div class="preset-card-title"><i data-lucide="battery-low"></i> High Fatigue</div>
+                <p class="preset-card-desc">Back-to-back meetings, exhausted, minimal energy.</p>
+              </button>
+              <button class="preset-card" onclick="selectPreset('commute')">
+                <div class="preset-card-title"><i data-lucide="clock"></i> Late Commute</div>
+                <p class="preset-card-desc">Late evening meetings & commute, morning prep possible.</p>
+              </button>
+              <button class="preset-card" onclick="selectPreset('stakes')">
+                <div class="preset-card-title"><i data-lucide="sparkles"></i> High-Stakes Event</div>
+                <p class="preset-card-desc">Busy day, but tonight is an elegant Date Night at home!</p>
+              </button>
+            </div>
+          </div>
+
+          <!-- Custom Input (Only in Live Mode) -->
+          <div id="live-inputs-container" class="form-group hidden">
+            <label class="form-label" for="schedule-input">Describe your day & schedule</label>
+            <textarea id="schedule-input" class="glass-textarea" placeholder="E.g., I have meetings from 9 to 5, then gym at 6, and I want to cook a quick but tasty dinner. I have chicken and rice in the fridge."></textarea>
+          </div>
+
+          <!-- Energy/Fatigue Selector -->
+          <div class="form-group">
+            <label class="form-label">Energy Level / Fatigue</label>
+            <div class="energy-options">
+              <input type="radio" name="fatigue" id="fatigue-low" value="low">
+              <label for="fatigue-low" class="energy-pill"><i data-lucide="battery-charging"></i> Energetic</label>
+
+              <input type="radio" name="fatigue" id="fatigue-med" value="medium" checked>
+              <label for="fatigue-med" class="energy-pill"><i data-lucide="battery"></i> Normal</label>
+
+              <input type="radio" name="fatigue" id="fatigue-high" value="high">
+              <label for="fatigue-high" class="energy-pill"><i data-lucide="battery-low"></i> Exhausted</label>
+            </div>
+          </div>
+
+          <!-- Budget Preferences -->
+          <div class="form-group">
+            <label class="form-label">Budget Preferences</label>
+            <div class="budget-options">
+              <input type="radio" name="budget" id="budget-pantry" value="low" checked>
+              <label for="budget-pantry" class="budget-pill"><i data-lucide="home"></i> Pantry First / Budget</label>
+
+              <input type="radio" name="budget" id="budget-splurge" value="high">
+              <label for="budget-splurge" class="budget-pill"><i data-lucide="shopping-bag"></i> Splurge / Fancy</label>
+            </div>
+          </div>
+
+          <!-- Motivational Voice Selector -->
+          <div class="form-group">
+            <label class="form-label">Sous-Chef Motivational Voice</label>
+            <div class="voice-selector">
+              <input type="radio" name="voice" id="voice-hype" value="hype" checked>
+              <label for="voice-hype" class="voice-pill">
+                <i data-lucide="flame"></i>
+                <div class="voice-details">
+                  <strong>The Hype Bestie</strong>
+                  <span>High energy, rewarding, celebratory!</span>
+                </div>
+              </label>
+
+              <input type="radio" name="voice" id="voice-stoic" value="stoic">
+              <label for="voice-stoic" class="voice-pill">
+                <i data-lucide="compass"></i>
+                <div class="voice-details">
+                  <strong>The Stoic Realist</strong>
+                  <span>Discipline, efficiency, future-self gains.</span>
+                </div>
+              </label>
+
+              <input type="radio" name="voice" id="voice-mom" value="mom">
+              <label for="voice-mom" class="voice-pill">
+                <i data-lucide="heart"></i>
+                <div class="voice-details">
+                  <strong>The Pocket Mom</strong>
+                  <span>Nurturing, warm, comforting self-care.</span>
+                </div>
+              </label>
+            </div>
+          </div>
+
+          <button id="generate-btn" class="generate-btn" onclick="generateMealPlan()">
+            <span id="generate-btn-text">Generate My Cooking Plan</span>
+            <div id="generate-loader" class="loader hidden"></div>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Right Panel: Generated Output -->
+      <section class="output-panel">
+        
+        <!-- Welcome Screen (Shown initially) -->
+        <div id="welcome-panel" class="glass-card welcome-card">
+          <i data-lucide="utensils-cross-keys" class="welcome-icon"></i>
+          <h2>Welcome to your Kitchen HQ</h2>
+          <p>Configure your day, choose a motivational voice, and hit <strong>Generate</strong> to plan a custom meal flow tailored to your schedule, cognitive load, and budget.</p>
+          <div class="welcome-features">
+            <div class="w-feature"><i data-lucide="check-square"></i> Gamified lists</div>
+            <div class="w-feature"><i data-lucide="dollar-sign"></i> Budget audits</div>
+            <div class="w-feature"><i data-lucide="smile"></i> Motivational boosts</div>
+            <div class="w-feature"><i data-lucide="alert-octagon"></i> 10-Min Panic Button</div>
+          </div>
+        </div>
+
+        <!-- Dashboard Content (Hidden until generated) -->
+        <div id="plan-panel" class="plan-content-wrapper hidden">
+          
+          <!-- Motivation Header Card -->
+          <div class="glass-card motivation-banner">
+            <div class="motivation-icon-box">
+              <i data-lucide="message-circle" id="m-voice-icon"></i>
+            </div>
+            <div>
+              <h4 id="m-voice-title">The Hype Bestie says:</h4>
+              <p id="m-voice-quote" class="motivation-quote">"Let's get this cooking party started!"</p>
+            </div>
+          </div>
+
+          <!-- Meals Row: B / L / D Plan -->
+          <div class="meals-row">
+            <!-- Breakfast Card -->
+            <div class="glass-card meal-card">
+              <div class="meal-header">
+                <span class="meal-badge breakfast-badge">Breakfast</span>
+                <span id="b-meal-time" class="meal-meta"><i data-lucide="clock"></i> 10 mins</span>
+              </div>
+              <h3 id="b-meal-title" class="meal-title">Scrambled Eggs & Toast</h3>
+              <p id="b-meal-desc" class="meal-desc">Quick, high-protein start to the day. Minimal dishes.</p>
+              <div class="meal-stats">
+                <span id="b-meal-difficulty"><i data-lucide="gauge"></i> Easy</span>
+                <span id="b-meal-cleanup"><i data-lucide="sparkle"></i> Very Low Cleanup</span>
+              </div>
+            </div>
+
+            <!-- Lunch Card -->
+            <div class="glass-card meal-card">
+              <div class="meal-header">
+                <span class="meal-badge lunch-badge">Lunch</span>
+                <span id="l-meal-time" class="meal-meta"><i data-lucide="clock"></i> 15 mins</span>
+              </div>
+              <h3 id="l-meal-title" class="meal-title">Turkey Wrap</h3>
+              <p id="l-meal-desc" class="meal-desc">Assembled wrapper with greens and sliced turkey.</p>
+              <div class="meal-stats">
+                <span id="l-meal-difficulty"><i data-lucide="gauge"></i> Easy</span>
+                <span id="l-meal-cleanup"><i data-lucide="sparkle"></i> No-Cook</span>
+              </div>
+            </div>
+
+            <!-- Dinner Card -->
+            <div class="glass-card meal-card dinner-card-highlight">
+              <div class="meal-header">
+                <span class="meal-badge dinner-badge">Dinner</span>
+                <span id="d-meal-time" class="meal-meta"><i data-lucide="clock"></i> 25 mins</span>
+              </div>
+              <h3 id="d-meal-title" class="meal-title">One-Pot Pasta</h3>
+              <p id="d-meal-desc" class="meal-desc">Cherry tomatoes, garlic, basil, and pasta cooked in one pan.</p>
+              <div class="meal-stats">
+                <span id="d-meal-difficulty"><i data-lucide="gauge"></i> Medium</span>
+                <span id="d-meal-cleanup"><i data-lucide="sparkle"></i> One Pot</span>
+              </div>
+              <!-- Mini-action trigger for Panic Button inside dinner -->
+              <button class="panic-inline-btn" onclick="triggerPanicPivot()">
+                <i data-lucide="alert-octagon"></i> Exhausted? Hit Panic Pivot
+              </button>
+            </div>
+          </div>
+
+          <!-- Secondary Grid: Grocery, Prep & Budget -->
+          <div class="secondary-grid">
+            
+            <!-- Left: Gamified Cooking & Prep Checklist -->
+            <div class="glass-card prep-section">
+              <div class="section-header">
+                <h3><i data-lucide="swords" class="icon-red"></i> Defeat The Prep Timeline</h3>
+                <span class="progress-percent" id="prep-progress-text">0% Done</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="prep-progress-bar"></div>
+              </div>
+              <p id="energy-roi-pitch" class="energy-roi-card">
+                <strong>Energy ROI Tip:</strong> Fast food delivery takes 45 mins and costs $25. Cooking this one-pot meal takes 15 mins, costs $4, and gives you nutrient-packed brainpower!
+              </p>
+              <div class="checklist-items" id="prep-checklist">
+                <!-- Javascript populated tasks -->
+              </div>
+            </div>
+
+            <!-- Right: Grocery List & Substitutions -->
+            <div class="right-col-grid">
+              
+              <!-- Grocery list -->
+              <div class="glass-card grocery-section">
+                <div class="section-header">
+                  <h3><i data-lucide="shopping-cart" class="icon-green"></i> Aisle-by-Aisle Grocery List</h3>
+                  <span class="progress-percent" id="grocery-progress-text">0% Done</span>
+                </div>
+                <div class="progress-bar-container">
+                  <div class="progress-bar-fill" id="grocery-progress-bar"></div>
+                </div>
+                <div class="grocery-aisles" id="grocery-aisles-list">
+                  <!-- Javascript populated -->
+                </div>
+              </div>
+
+              <!-- Substitutions & Budget -->
+              <div class="glass-card extras-section">
+                <div class="extras-tab-headers">
+                  <button id="tab-subs" class="tab-btn active" onclick="switchExtrasTab('subs')">
+                    <i data-lucide="replace"></i> Substitutions
+                  </button>
+                  <button id="tab-budget" class="tab-btn" onclick="switchExtrasTab('budget')">
+                    <i data-lucide="dollar-sign"></i> Budget Audit
+                  </button>
+                </div>
+                <div class="extras-tab-content">
+                  <div id="content-subs" class="tab-pane">
+                    <ul class="subs-list" id="subs-list-container">
+                      <!-- JS populated -->
+                    </ul>
+                  </div>
+                  <div id="content-budget" class="tab-pane hidden">
+                    <div class="budget-status-card" id="budget-status-box">
+                      <div class="budget-status-icon">
+                        <i data-lucide="check-circle" id="budget-indicator-icon"></i>
+                      </div>
+                      <div>
+                        <h4 id="budget-title">Feasibility: Highly Feasible</h4>
+                        <p id="budget-desc">Pantry-first recipe with standard budget staples. Low extra spending required.</p>
+                      </div>
+                    </div>
+                    <div class="budget-breakdown">
+                      <h5>Estimated Out-of-Pocket Cost</h5>
+                      <span id="budget-cost" class="budget-cost-tag">$5.00</span>
+                      <p class="budget-note">Uses existing pantry stock (salt, oil, pepper, garlic, spices) to keep out-of-pocket costs at a minimum.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- Bottom: Clean As You Go Reminders -->
+          <div class="glass-card cleanup-banner">
+            <div class="cleanup-icon-box">
+              <i data-lucide="spray-can"></i>
+            </div>
+            <div>
+              <h4>Clean-As-You-Go Prompts</h4>
+              <p id="cleanup-prompt-text">While the pasta is simmering for 10 minutes, put away the chopping board, wash the knife, and wipe down the counter. Future-you will be incredibly grateful!</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>Built with ❤️ by Sous-Chef AI. Code quality audited under PromptWars Guardrails.</p>
+    </footer>
+  </div>
+
+  <!-- Panic Pivot Modal (Hidden initially) -->
+  <div id="panic-modal" class="modal-overlay hidden">
+    <div class="glass-card modal-content">
+      <div class="modal-header">
+        <div class="modal-header-title">
+          <i data-lucide="alert-octagon" class="pulse-icon icon-red"></i>
+          <h2>EMERGENCY PANIC PIVOT ACTIVATED!</h2>
+        </div>
+        <button class="close-modal" onclick="closePanicModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p class="panic-intro">Okay, the day has beaten you and you're hitting the wall. We are ditching the elaborate plans. Here is your <strong>10-minute emergency pivot meal</strong> that keeps the same vibe but requires zero mental stamina and minimal pots!</p>
+        
+        <div class="panic-meal-box">
+          <h3 id="panic-meal-title">The 10-Minute Upgrade Ramen</h3>
+          <p id="panic-meal-desc">Instant ramen, but we drop in a poached egg, green onions, and a splash of sesame oil to make it feel like real food.</p>
+        </div>
+
+        <div class="panic-flow">
+          <h4>Gamified Rescue Steps:</h4>
+          <ol id="panic-meal-steps">
+            <li><strong>Boil & Drop:</strong> Bring water to a boil, drop the noodles, and throw the spice packet away or use half to control sodium.</li>
+            <li><strong>Add Reinforcements:</strong> Crack an egg directly into the boiling broth in the last 2 minutes. Do not stir it; let it poach!</li>
+            <li><strong>Plating Glory:</strong> Pour into a bowl, snip green onions with scissors (no chopping board to wash!), and add a drizzle of soy sauce or hot sauce.</li>
+            <li><strong>Immediate Clean:</strong> Rinse the pot *immediately* after pouring. Do not let ramen starch dry. Done!</li>
+          </ol>
+        </div>
+        <div class="modal-actions">
+          <button class="primary-btn" onclick="acceptPanicPivot()">Accept Pivot & Update Plan</button>
+          <button class="secondary-btn" onclick="closePanicModal()">Go Back</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load core JS script -->
+  <script src="app.js"></script>
+</body>
+</html>
